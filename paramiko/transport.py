@@ -1925,8 +1925,10 @@ class Transport(threading.Thread, ClosingContextManager):
                 self.saved_exception = e
             except socket.error as e:
                 if type(e.args) is tuple:
-                    if e.args:
-                        emsg = '{} ({:d})'.format(e.args[1], e.args[0])
+                    if e.args and len(e.args) == 2:
+                        emsg = '%s (%d)' % (e.args[1], e.args[0])
+                    elif len(e.args) == 1:
+                        emsg = '{0}'.format(e.args[0])
                     else:  # empty tuple, e.g. socket.timeout
                         emsg = str(e) or repr(e)
                 else:
